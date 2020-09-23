@@ -9,7 +9,11 @@ except ImportError:
 def clone_subpattern(subpattern, data=None):
     if not data:
         data = subpattern.data
-    return SubPattern(subpattern.state, data)
+    try:
+        state = subpattern.state
+    except AttributeError:
+        state = subpattern.pattern
+    return SubPattern(state, data)
 
 
 def create_subpattern(seq=None):
