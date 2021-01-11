@@ -10,6 +10,7 @@ from sre_parse import (
 )
 
 from .utils import create_subpattern
+from ._analyse import preprocess
 
 
 def _simplify_sre_list(seq):
@@ -17,7 +18,7 @@ def _simplify_sre_list(seq):
 
     prev_tok = None
     prev_val = None
-    for i, (tok, val) in enumerate(list(seq)):
+    for i, (tok, val, data) in enumerate(preprocess(seq)):
         if tok == prev_tok and (val == prev_val or _val_eq(val, prev_val)):
             if tok == MAX_REPEAT:
                 min_repeat = min(MAXREPEAT, prev_val[0] + val[0])
