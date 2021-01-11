@@ -73,3 +73,8 @@ class TestSimplifyRegex(unittest.TestCase):
         self._assert_equal(
             r"(?:(?:[a-z]{,100}){,100}){,100}", r"(?:(?:[a-z]{,100}){,100}){,100}"
         )
+
+    def test_unused_greedy(self):
+        self._assert_equal(r"^[\s\S]+?\.", r"^.+?\.")
+        self._assert_equal(r"^[^.]+?\.", r"^[^.]+\.")
+        # TODO: simplify that to r"^.+?\."
