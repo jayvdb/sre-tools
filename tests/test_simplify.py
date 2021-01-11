@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import re
 import sre_compile
 import sre_parse
 import unittest
@@ -10,6 +11,7 @@ from sre_tools.simplify import simplify_regex
 
 class TestSimplifyRegex(unittest.TestCase):
     def _assert_equal(self, a, b):
+        print('Input: {}'.format(sre_parse.parse(a).data))
         rv = simplify_regex(a)
         self.assertIsInstance(rv, sre_parse.SubPattern)
         sre_compile.compile(rv)
@@ -46,6 +48,14 @@ class TestSimplifyRegex(unittest.TestCase):
         self._assert_equal(r"a{2}a", r"a{3}")
         self._assert_equal(r"aaa", r"a{3}")
         self._assert_equal(r"aa{2}", r"a{3}")
+
+    def test_merge_class_union(self):
+        self._assert_equal(r"[\s\S]", r".")
+        self._assert_equal(r"[\s \S]", r".")
+
+    def test_merge_class_union_inverted(self):
+        with self.assertRaisesRegexp(re.error, "cant negate all matches"):
+            simplify_regex(r" [^\s\S]")
 
     def test_anchor(self):
         self._assert_equal(r"^aaa", r"^a{3}")
