@@ -68,6 +68,9 @@ def _simplify_sre_list(seq):
             elif tok == SUBPATTERN:
                 val = (*val[0:3], create_subpattern(_simplify_sre_list(val[3])))
 
+            elif tok == IN:
+                if data is True:
+                    tok, val = ANY, None
         new.append((tok, val))
         prev_tok = tok
         prev_val = val
