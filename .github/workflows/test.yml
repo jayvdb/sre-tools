@@ -41,12 +41,12 @@ jobs:
         run: coverage report -m
 
       - name: Install deepsource CLI
-        if: ${{ matrix.os == 'linux' && matrix.python-version == '3.10' }}
+        if: ${{ matrix.os == 'ubuntu' && matrix.python-version == '3.10' }}
         run: |
           curl https://deepsource.io/cli | sh
 
       - name: Submit code coverage
-        if: ${{ matrix.os == 'linux' && matrix.python-version == '3.10' }}
+        if: ${{ matrix.os == 'ubuntu' && matrix.python-version == '3.10' }}
         env:
           DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
         run: |
