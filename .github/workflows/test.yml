@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu
+          - windows
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade tox tox-py
+
+      - name: Run tox targets for ${{ matrix.python-version }}
+        run: tox --py current
+
+      - name: Install deepsource CLI
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          curl https://deepsource.io/cli | sh
+
+      - name: Submit code coverage
+        if: ${{ matrix.os != 'windows' }}
+        env:
+          DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+        run: |
+          # From the root directory, run the report coverage command
+          ./bin/deepsource report --analyzer test-coverage --key python --value-file ./coverage.xml
