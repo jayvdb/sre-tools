@@ -10,11 +10,9 @@ from sre_tools.analyse import check_regex
 class TestAnalyseRegex(unittest.TestCase):
 
     def _assert_valid(self, a):
-        print('Input: {}'.format(sre_parse.parse(a).data))
         check_regex(a)
 
     def _assert_invalid(self, a, msg):
-        print('Input: {}'.format(sre_parse.parse(a).data))
         with self.assertRaisesRegexp(re.error, msg):
             check_regex(a)
 
