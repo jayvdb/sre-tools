@@ -11,7 +11,6 @@ from sre_tools.simplify import simplify_regex
 
 class TestSimplifyRegex(unittest.TestCase):
     def _assert_equal(self, a, b):
-        print('Input: {}'.format(sre_parse.parse(a).data))
         rv = simplify_regex(a)
         self.assertIsInstance(rv, sre_parse.SubPattern)
         sre_compile.compile(rv)
