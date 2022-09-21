@@ -3,11 +3,11 @@ import sre_parse
 from .utils import create_subpattern
 
 
-def split_regex(pattern, at, remainer=False):
+def split_regex(pattern, at, remainder=False):
     if not isinstance(pattern, sre_parse.SubPattern):
         pattern = sre_parse.parse(pattern)
     found = False
-    if remainer:
+    if remainder:
         new = create_subpattern()
     else:
         new = None
@@ -27,7 +27,7 @@ def split_regex(pattern, at, remainer=False):
                 del pattern[i]
                 continue
         if found:
-            if remainer:
+            if remainder:
                 new.append((tok, val))
             del pattern[-1]
     if not found:

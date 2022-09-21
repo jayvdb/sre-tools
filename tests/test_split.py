@@ -11,13 +11,13 @@ from sre_tools._split import split_regex
 
 class TestSplitRegex(unittest.TestCase):
     def test_split_none(self):
-        rv = split_regex(r"^ab", "/", remainer=True)
+        rv = split_regex(r"^ab", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[1] is None
 
     def test_split_one(self):
-        rv = split_regex(r"a/b", "/", remainer=True)
+        rv = split_regex(r"a/b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]
@@ -36,7 +36,7 @@ class TestSplitRegex(unittest.TestCase):
         assert c1.pattern is None
 
     def test_split_multiple(self):
-        rv = split_regex(r"a/b/c", "/", remainer=True)
+        rv = split_regex(r"a/b/c", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(LITERAL, ord("a"))]
@@ -56,7 +56,7 @@ class TestSplitRegex(unittest.TestCase):
         assert c1.pattern is None
 
     def test_split_at(self):
-        rv = split_regex(r"^/b", "/", remainer=True)
+        rv = split_regex(r"^/b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.AT, sre_parse.AT_BEGINNING)]
@@ -65,7 +65,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_skip_not(self):
-        rv = split_regex(r"[^/]a/b", "/", remainer=True)
+        rv = split_regex(r"[^/]a/b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [
@@ -77,7 +77,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_min_max(self):
-        rv = split_regex(r"a/{1,3}b", "/", remainer=True)
+        rv = split_regex(r"a/{1,3}b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]
@@ -85,7 +85,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_plus(self):
-        rv = split_regex(r"a/+b", "/", remainer=True)
+        rv = split_regex(r"a/+b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]
@@ -93,7 +93,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_star(self):
-        rv = split_regex(r"a/*b", "/", remainer=True)
+        rv = split_regex(r"a/*b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]
@@ -101,7 +101,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_class(self):
-        rv = split_regex(r"a[/]b", "/", remainer=True)
+        rv = split_regex(r"a[/]b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]
@@ -109,7 +109,7 @@ class TestSplitRegex(unittest.TestCase):
         assert rv[1].data == [(sre_parse.LITERAL, ord("b"))]
 
     def test_split_class2(self):
-        rv = split_regex(r"a[(/]b", "/", remainer=True)
+        rv = split_regex(r"a[(/]b", "/", remainder=True)
         assert isinstance(rv, tuple), rv
         assert isinstance(rv[0], sre_parse.SubPattern), rv
         assert rv[0].data == [(sre_parse.LITERAL, ord("a"))]

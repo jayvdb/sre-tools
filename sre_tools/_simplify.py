@@ -119,8 +119,8 @@ def _val_eq(a, b):
     if length != len(b):
         return False
 
-    types_a = list(type(i) for i in a)
-    types_b = list(type(i) for i in b)
+    types_a = [type(i) for i in a]
+    types_b = [type(i) for i in b]
     if types_a != types_b:
         if types_a[:-1] == types_b[:-1]:
             return _val_eq(a[-1], b[-1])
