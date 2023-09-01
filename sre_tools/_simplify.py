@@ -5,11 +5,13 @@ from sre_parse import (
     LITERAL,
     MAX_REPEAT,
     MAXREPEAT,
+    MIN_REPEAT,
     SubPattern,
     SUBPATTERN,
 )
 
 from .utils import create_subpattern
+from ._analyse import preprocess
 
 
 def _simplify_sre_list(seq):
@@ -17,7 +19,7 @@ def _simplify_sre_list(seq):
 
     prev_tok = None
     prev_val = None
-    for i, (tok, val) in enumerate(list(seq)):
+    for i, (tok, val, data) in enumerate(preprocess(seq)):
         if tok == prev_tok and (val == prev_val or _val_eq(val, prev_val)):
             if tok == MAX_REPEAT:
                 min_repeat = min(MAXREPEAT, prev_val[0] + val[0])
@@ -61,11 +63,15 @@ def _simplify_sre_list(seq):
                         new[-1] = prev_tok, prev_val
                         continue
 
-            elif tok == MAX_REPEAT:
+            elif tok in (MAX_REPEAT, MIN_REPEAT):
                 val = (val[0], val[1], create_subpattern(_simplify_sre_list(val[2])))
 
             elif tok == SUBPATTERN:
                 val = (*val[0:3], create_subpattern(_simplify_sre_list(val[3])))
+
+            elif tok == IN:
+                if data is True:
+                    tok, val = ANY, None
 
         new.append((tok, val))
         prev_tok = tok
@@ -82,7 +88,7 @@ def _pair_eq(a, b):
     val_a = a[1]
     val_b = b[1]
 
-    if tok == MAX_REPEAT:
+    if tok in (MAX_REPEAT, MIN_REPEAT):
         if val_a[0:2] != val_b[0:2]:
             return False
         return _val_eq(val_a[-1], val_b[-1])
@@ -137,7 +143,7 @@ def _val_eq(a, b):
 
     if length == 2:
         tok, val = a
-        if tok == MAX_REPEAT:
+        if tok in (MAX_REPEAT, MIN_REPEAT):
             return _val_eq(val, b[1])
         elif tok == SUBPATTERN:
             return _pair_eq(a, b)

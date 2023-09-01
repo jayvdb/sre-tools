@@ -1,11 +1,7 @@
-from sre_parse import SubPattern, parse
-
-from .utils import clone_subpattern
+from .utils import _subpattern_invoke, clone_subpattern
 from ._simplify import _simplify_sre_list
 
 
 def simplify_regex(pattern):
-    if not isinstance(pattern, SubPattern):
-        pattern = parse(pattern)
-    seq = _simplify_sre_list(pattern.data)
+    pattern, seq = _subpattern_invoke(pattern, _simplify_sre_list)
     return clone_subpattern(pattern, seq)

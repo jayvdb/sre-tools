@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import re
 import sre_compile
 import sre_parse
 import unittest
@@ -47,6 +48,14 @@ class TestSimplifyRegex(unittest.TestCase):
         self._assert_equal(r"aaa", r"a{3}")
         self._assert_equal(r"aa{2}", r"a{3}")
 
+    def test_merge_class_union(self):
+        self._assert_equal(r"[\s\S]", r".")
+        self._assert_equal(r"[\s \S]", r".")
+
+    def test_merge_class_union_inverted(self):
+        with self.assertRaisesRegexp(re.error, "cant negate all matches"):
+            simplify_regex(r" [^\s\S]")
+
     def test_anchor(self):
         self._assert_equal(r"^aaa", r"^a{3}")
 
@@ -63,3 +72,8 @@ class TestSimplifyRegex(unittest.TestCase):
         self._assert_equal(
             r"(?:(?:[a-z]{,100}){,100}){,100}", r"(?:(?:[a-z]{,100}){,100}){,100}"
         )
+
+    def test_unused_greedy(self):
+        self._assert_equal(r"^[\s\S]+?\.", r"^.+?\.")
+        self._assert_equal(r"^[^.]+?\.", r"^[^.]+\.")
+        # TODO: simplify that to r"^.+?\."
